@@ -1,1 +1,1 @@
-# datascience-solutions
+# solution to the data science exercise
