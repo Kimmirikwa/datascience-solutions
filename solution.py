@@ -31,10 +31,15 @@ def get_agg_key(row):
 
 	return ','.join([network, product, month])
 
+aggregate_data = {}
 with open('data/input.csv') as csv_file:
 	csv_reader = csv.DictReader(csv_file)
 	for row in csv_reader:
 		row = clean_data(row)
 		amount = float(row.get('Amount'))
-        agg_key = get_agg_key(row)
-        print(agg_key)
+		agg_key = get_agg_key(row)
+
+		aggregate_data.setdefault(agg_key, {'Total loan': 0, 'Loans count': 0})
+        aggregate_data[agg_key]['Total loan'] += amount
+        aggregate_data[agg_key]['Loans count'] += 1
+        aggregate_data[agg_key]['Average loan'] = aggregate_data[agg_key]['Total loan'] / aggregate_data[agg_key]['Loans count']
