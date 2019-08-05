@@ -1,5 +1,6 @@
 import csv
 
+
 def clean_data(row):
 	'''
 		cleans the data by removing the first and the last characters in some properties of the row,
@@ -11,8 +12,10 @@ def clean_data(row):
 
 	return row
 
+
 def get_month(date):
 	return date[3:]
+
 
 def get_agg_key(row):
 	'''
@@ -31,6 +34,7 @@ def get_agg_key(row):
 
 	return ','.join([network, product, month])
 
+
 def get_key_components(key):
 	'''
 		splits the key into its constituent elements
@@ -38,8 +42,11 @@ def get_key_components(key):
 	'''
 	return key.split(',')
 
+
+# reading and aggregating the data
+# after reading the raw data, it is first cleaned and then aggregated
 aggregate_data = {}
-with open('data/input.csv') as csv_file:
+with open('data/input.csv', mode='r') as csv_file:
 	csv_reader = csv.DictReader(csv_file)
 	for row in csv_reader:
 		row = clean_data(row)
@@ -54,12 +61,10 @@ with open('data/input.csv') as csv_file:
 
 with open('output/Output.csv', mode='w') as aggregate_file:
     aggregate_writer = csv.writer(aggregate_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    header = ['Network', 'Product', 'Month', 'Total Amount', 'Average Amount', 'Loan Counts']
+    header = ['Network', 'Product', 'Month', 'Total Amount', 'Average Amount', 'Loan Counts']  # these will be the headers of the data
     aggregate_writer.writerow(header)
 
     for key, val in aggregate_data.items():
-    	row_data = get_key_components(key)
-    	row_data.append(val.get('Total loan'))
-    	row_data.append(val.get('Average loan'))
-    	row_data.append(val.get('Loans count'))
+    	row_data = get_key_components(key)  # list elements of the key of the group
+    	row_data.extend([val.get('Total loan'), val.get('Average loan'), val.get('Loans count')])
     	aggregate_writer.writerow(row_data)
